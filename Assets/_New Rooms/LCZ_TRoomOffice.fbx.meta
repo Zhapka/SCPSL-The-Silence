@@ -1,0 +1,142 @@
+fileFormatVersion: 2
+guid: 7f0a3ebd05ce2934698cc86083d6ab14
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Holder
+    100002: LCZ_T_Room_Collision
+    100004: LCZ_T_Room_Standard_LOD0
+    100006: LCZ_T_Room_Standard_LOD0.001
+    100008: LCZ_T_Room_Standard_LOD0.002
+    100010: LCZ_T_Room_Standard_LOD0.003
+    100012: LCZ_T_Room_Standard_LOD0.004
+    100014: LCZ_T_Room_Standard_LOD0.005
+    100016: //RootNode
+    100018: Lights
+    100020: Room.001
+    100022: Window
+    400000: Holder
+    400002: LCZ_T_Room_Collision
+    400004: LCZ_T_Room_Standard_LOD0
+    400006: LCZ_T_Room_Standard_LOD0.001
+    400008: LCZ_T_Room_Standard_LOD0.002
+    400010: LCZ_T_Room_Standard_LOD0.003
+    400012: LCZ_T_Room_Standard_LOD0.004
+    400014: LCZ_T_Room_Standard_LOD0.005
+    400016: //RootNode
+    400018: Lights
+    400020: Room.001
+    400022: Window
+    2100000: Aero_pipes.003
+    2100002: Walls.003
+    2100004: MainWall.003
+    2100006: CrossRoomMets.002
+    2100008: Ground.003
+    2100010: Roof.003
+    2100012: Glass_1.002
+    2300000: Holder
+    2300002: LCZ_T_Room_Standard_LOD0
+    2300004: LCZ_T_Room_Standard_LOD0.001
+    2300006: LCZ_T_Room_Standard_LOD0.002
+    2300008: LCZ_T_Room_Standard_LOD0.003
+    2300010: LCZ_T_Room_Standard_LOD0.004
+    2300012: LCZ_T_Room_Standard_LOD0.005
+    2300014: Window
+    3300000: Holder
+    3300002: LCZ_T_Room_Standard_LOD0
+    3300004: LCZ_T_Room_Standard_LOD0.001
+    3300006: LCZ_T_Room_Standard_LOD0.002
+    3300008: LCZ_T_Room_Standard_LOD0.003
+    3300010: LCZ_T_Room_Standard_LOD0.004
+    3300012: LCZ_T_Room_Standard_LOD0.005
+    3300014: Window
+    4300000: Holder
+    4300002: LCZ_T_Room_Standard_LOD0
+    4300004: LCZ_T_Room_Standard_LOD0.001
+    4300006: LCZ_T_Room_Standard_LOD0.002
+    4300008: LCZ_T_Room_Standard_LOD0.003
+    4300010: LCZ_T_Room_Standard_LOD0.004
+    4300012: LCZ_T_Room_Standard_LOD0.005
+    4300014: Window
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
