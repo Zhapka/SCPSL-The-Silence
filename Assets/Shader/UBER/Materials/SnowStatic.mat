@@ -2,16 +2,22 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: SnowStatic
   m_Shader: {fileID: 4800000, guid: 8793935a89241024a8b9616db346a230, type: 3}
-  m_ShaderKeywords: _DETAIL_TEXTURED _GLITTER _OCCLUSION_FROM_ALBEDO_ALPHA _TRANSLUCENCY
-    _WETNESS_NONE
+  m_ValidKeywords:
+  - _DETAIL_TEXTURED
+  - _GLITTER
+  - _TRANSLUCENCY
+  - _WETNESS_NONE
+  m_InvalidKeywords:
+  - _OCCLUSION_FROM_ALBEDO_ALPHA
   m_LightmapFlags: 5
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -159,6 +165,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - PARALLAX_BIAS: 0.5
     - PARALLAX_SCALE: 0.05
@@ -283,6 +290,7 @@ Material:
     - _ShadowMIPbias: 0
     - _ShadowStrength: 1
     - _Skyshop: 0
+    - _Smoothness_from_albedo_alpha: 0
     - _Snow: 0
     - _SnowBumpMacro: 0.231
     - _SnowBumpMicro: 0.0314
@@ -433,3 +441,4 @@ Material:
     - bumpMap2TexelSize: {r: 1, g: 1, b: 1, a: 1}
     - bumpMapTexelSize: {r: 0.00390625, g: 0.00390625, b: 256, a: 256}
     - heightMapTexelSize: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
