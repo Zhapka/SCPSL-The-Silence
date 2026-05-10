@@ -1780,6 +1780,7 @@ GameObject:
   - component: {fileID: 382}
   - component: {fileID: 571}
   - component: {fileID: 1587995944}
+  - component: {fileID: 1587995945}
   m_Layer: 0
   m_Name: Point light
   m_TagString: Untagged
@@ -3045,7 +3046,7 @@ GameObject:
   m_Component:
   - component: {fileID: 397}
   - component: {fileID: 575}
-  - component: {fileID: 1830780182}
+  - component: {fileID: 575553235}
   m_Layer: 0
   m_Name: Spotlight
   m_TagString: Untagged
@@ -11149,7 +11150,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.30147058, g: 0.5375256, b: 1, a: 1}
-  m_Intensity: 0.4
+  m_Intensity: 0.1
   m_Range: 11.74
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -11274,7 +11275,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.7352941, g: 0.7809331, b: 1, a: 1}
-  m_Intensity: 0.2
+  m_Intensity: 0
   m_Range: 28.5
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -11398,10 +11399,10 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.4
+  m_Intensity: 0.2
   m_Range: 45.43
-  m_SpotAngle: 36
-  m_InnerSpotAngle: 26.290071
+  m_SpotAngle: 28
+  m_InnerSpotAngle: 20
   m_CookieSize: 10
   m_Shadows:
     m_Type: 2
@@ -30394,9 +30395,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SampleCount: 12
-  ScatteringCoef: 0.73
-  ExtinctionCoef: 0.0024
-  SkyboxExtinctionCoef: 0.9
+  ScatteringCoef: 19.3
+  ExtinctionCoef: 0
+  SkyboxExtinctionCoef: 0
   MieG: 0.137
   HeightFog: 0
   HeightScale: 0.1
@@ -37452,6 +37453,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &575553235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b5c0f2b5e806ca2ff80bb38f3dc1443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SampleCount: 25
+  ScatteringCoef: 0
+  ExtinctionCoef: 0
+  SkyboxExtinctionCoef: 0
+  MieG: 0.1
+  HeightFog: 0
+  HeightScale: 0.1
+  GroundLevel: 0
+  Noise: 0
+  NoiseScale: 0.015
+  NoiseIntensity: 1
+  NoiseIntensityOffset: 0.3
+  NoiseVelocity: {x: 3, y: 3}
+  MaxRayLength: 100
 --- !u!114 &771964084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37500,6 +37527,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1587995945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 98}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b5c0f2b5e806ca2ff80bb38f3dc1443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SampleCount: 8
+  ScatteringCoef: 5
+  ExtinctionCoef: 0.2
+  SkyboxExtinctionCoef: 0
+  MieG: 0.1
+  HeightFog: 0
+  HeightScale: 0.1
+  GroundLevel: 0
+  Noise: 0
+  NoiseScale: 0.015
+  NoiseIntensity: 1
+  NoiseIntensityOffset: 0.3
+  NoiseVelocity: {x: 3, y: 3}
+  MaxRayLength: 100
 --- !u!1 &1659825638
 GameObject:
   m_ObjectHideFlags: 0
@@ -37578,15 +37631,3 @@ ReflectionProbe:
   m_UseOcclusionCulling: 1
   m_Importance: 1
   m_CustomBakedTexture: {fileID: 0}
---- !u!114 &1830780182
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
