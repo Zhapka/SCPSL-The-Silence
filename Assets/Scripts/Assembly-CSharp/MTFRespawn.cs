@@ -7,478 +7,491 @@ using UnityEngine.Networking;
 
 public class MTFRespawn : NetworkBehaviour
 {
-	public GameObject ciTheme;
+    public GameObject ciTheme;
 
-	private ChopperAutostart mtf_a;
+    private ChopperAutostart mtf_a;
 
-	private CharacterClassManager _hostCcm;
+    private CharacterClassManager _hostCcm;
 
-	[Range(30f, 1000f)]
-	public int minMtfTimeToRespawn = 200;
+    [Range(30f, 1000f)]
+    public int minMtfTimeToRespawn = 200;
 
-	[Range(40f, 1200f)]
-	public int maxMtfTimeToRespawn = 400;
+    [Range(40f, 1200f)]
+    public int maxMtfTimeToRespawn = 400;
 
-	public float CI_Time_Multiplier = 2f;
+    public float CI_Time_Multiplier = 2f;
 
-	public float CI_Percent = 20f;
+    public float CI_Percent = 20f;
 
-	private float decontaminationCooldown;
+    private float decontaminationCooldown;
 
-	[Space(10f)]
-	[Range(2f, 15f)]
-	public int maxRespawnAmount = 15;
+    [Space(10f)]
+    [Range(2f, 15f)]
+    public int maxRespawnAmount = 15;
 
-	public float timeToNextRespawn;
+    public float timeToNextRespawn;
 
-	public bool nextWaveIsCI;
+    public bool nextWaveIsCI;
 
-	public List<GameObject> playersToNTF = new List<GameObject>();
+    public List<GameObject> playersToNTF = new List<GameObject>();
 
-	private bool loaded;
+    private bool loaded;
 
-	private bool chopperStarted;
+    private bool chopperStarted;
 
-	[HideInInspector]
-	public float respawnCooldown;
+    [HideInInspector]
+    public float respawnCooldown;
 
-	private static int kRpcRpcPlayAnnouncement;
+    private static int kRpcRpcPlayAnnouncement;
 
-	private static int kRpcRpcPlayCustomAnnouncement;
+    private static int kRpcRpcPlayCustomAnnouncement;
 
-	private static int kRpcRpcVan;
+    private static int kRpcRpcVan;
 
-	private static int kRpcRpcAnnouncCI;
+    private static int kRpcRpcAnnouncCI;
 
-	private void Start()
-	{
-		minMtfTimeToRespawn = ConfigFile.ServerConfig.GetInt("minimum_MTF_time_to_spawn", 200);
-		maxMtfTimeToRespawn = ConfigFile.ServerConfig.GetInt("maximum_MTF_time_to_spawn", 400);
-		CI_Percent = ConfigFile.ServerConfig.GetInt("ci_respawn_percent", 35);
-		if (NetworkServer.active && base.isServer && base.isLocalPlayer && !TutorialManager.status)
-		{
-			Timing.RunCoroutine(_Update(), Segment.FixedUpdate);
-		}
-	}
+    private void Start()
+    {
+        minMtfTimeToRespawn = ConfigFile.ServerConfig.GetInt("minimum_MTF_time_to_spawn", 200);
+        maxMtfTimeToRespawn = ConfigFile.ServerConfig.GetInt("maximum_MTF_time_to_spawn", 400);
+        CI_Percent = ConfigFile.ServerConfig.GetInt("ci_respawn_percent", 35);
+        if (NetworkServer.active && base.isServer && base.isLocalPlayer && !TutorialManager.status)
+        {
+            Timing.RunCoroutine(_Update(), Segment.FixedUpdate);
+        }
+    }
 
-	public void SetDecontCooldown(float f)
-	{
-		decontaminationCooldown = f;
-	}
+    public void SetDecontCooldown(float f)
+    {
+        decontaminationCooldown = f;
+    }
 
-	private void Update()
-	{
-		if (decontaminationCooldown >= 0f)
-		{
-			decontaminationCooldown -= Time.deltaTime;
-		}
-	}
+    private void Update()
+    {
+        if (decontaminationCooldown >= 0f)
+        {
+            decontaminationCooldown -= Time.deltaTime;
+        }
+    }
 
-	private IEnumerator<float> _Update()
-	{
-		_hostCcm = GetComponent<CharacterClassManager>();
-		if (!NonFacilityCompatibility.currentSceneSettings.enableRespawning)
-		{
-			yield break;
-		}
-		while (this != null)
-		{
-			if (mtf_a == null)
-			{
-				mtf_a = Object.FindObjectOfType<ChopperAutostart>();
-			}
-			if (!_hostCcm.roundStarted)
-			{
-				yield return 0f;
-				continue;
-			}
-			timeToNextRespawn -= 0.02f;
-			if (respawnCooldown >= 0f)
-			{
-				respawnCooldown -= 0.02f;
-			}
-			if (timeToNextRespawn < ((!nextWaveIsCI) ? 18f : 13.5f) && !loaded)
-			{
-				loaded = true;
-				GameObject[] players = PlayerManager.singleton.players;
-				GameObject[] array = players;
-				foreach (GameObject gameObject in array)
-				{
-					if (gameObject.GetComponent<CharacterClassManager>().curClass == 2)
-					{
-						chopperStarted = true;
-						if (nextWaveIsCI && !AlphaWarheadController.host.detonated)
-						{
-							SummonVan();
-						}
-						else
-						{
-							SummonChopper(true);
-						}
-						break;
-					}
-				}
-			}
-			if (timeToNextRespawn < 0f)
-			{
-				float maxDelay = 0f;
-				if (!nextWaveIsCI && PlayerManager.singleton.players.Where((GameObject item) => item.GetComponent<CharacterClassManager>().curClass == 2 && !item.GetComponent<ServerRoles>().OverwatchEnabled).ToArray().Length > 0)
-				{
-					bool warheadInProgress;
-					bool cassieFree;
-					do
-					{
-						warheadInProgress = AlphaWarheadController.host != null && AlphaWarheadController.host.inProgress && !AlphaWarheadController.host.detonated;
-						cassieFree = NineTailedFoxAnnouncer.singleton.isFree && decontaminationCooldown <= 0f;
-						yield return 0f;
-						maxDelay += 0.02f;
-					}
-					while (!(maxDelay > 70f) && (!cassieFree || warheadInProgress));
-				}
-				loaded = false;
-				if (GetComponent<CharacterClassManager>().roundStarted)
-				{
-					SummonChopper(false);
-				}
-				if (chopperStarted)
-				{
-					respawnCooldown = 35f;
-					RespawnDeadPlayers();
-				}
-				nextWaveIsCI = (float)Random.Range(0, 100) <= CI_Percent;
-				timeToNextRespawn = (float)Random.Range(minMtfTimeToRespawn, maxMtfTimeToRespawn) * ((!nextWaveIsCI) ? 1f : (1f / CI_Time_Multiplier));
-				chopperStarted = false;
-			}
-			yield return 0f;
-		}
-	}
+    private IEnumerator<float> _Update()
+    {
+        _hostCcm = GetComponent<CharacterClassManager>();
+        if (!NonFacilityCompatibility.currentSceneSettings.enableRespawning)
+        {
+            yield break;
+        }
+        while (this != null)
+        {
+            if (mtf_a == null)
+            {
+                mtf_a = Object.FindObjectOfType<ChopperAutostart>();
+            }
+            if (!_hostCcm.roundStarted)
+            {
+                yield return 0f;
+                continue;
+            }
+            timeToNextRespawn -= 0.02f;
+            if (respawnCooldown >= 0f)
+            {
+                respawnCooldown -= 0.02f;
+            }
+            if (timeToNextRespawn < ((!nextWaveIsCI) ? 18f : 13.5f) && !loaded)
+            {
+                loaded = true;
+                GameObject[] players = PlayerManager.singleton.players;
+                GameObject[] array = players;
+                foreach (GameObject gameObject in array)
+                {
+                    if (gameObject.GetComponent<CharacterClassManager>().curClass == 2)
+                    {
+                        chopperStarted = true;
+                        if (nextWaveIsCI && !AlphaWarheadController.host.detonated)
+                        {
+                            SummonVan();
+                        }
+                        else
+                        {
+                            SummonChopper(true);
+                        }
+                        break;
+                    }
+                }
+            }
+            if (timeToNextRespawn < 0f)
+            {
+                float maxDelay = 0f;
+                if (!nextWaveIsCI && PlayerManager.singleton.players.Where((GameObject item) => item.GetComponent<CharacterClassManager>().curClass == 2 && !item.GetComponent<ServerRoles>().OverwatchEnabled).ToArray().Length > 0)
+                {
+                    bool warheadInProgress;
+                    bool cassieFree;
+                    do
+                    {
+                        warheadInProgress = AlphaWarheadController.host != null && AlphaWarheadController.host.inProgress && !AlphaWarheadController.host.detonated;
+                        cassieFree = NineTailedFoxAnnouncer.singleton.isFree && decontaminationCooldown <= 0f;
+                        yield return 0f;
+                        maxDelay += 0.02f;
+                    }
+                    while (!(maxDelay > 70f) && (!cassieFree || warheadInProgress));
+                }
+                loaded = false;
+                if (GetComponent<CharacterClassManager>().roundStarted)
+                {
+                    SummonChopper(false);
+                }
+                if (chopperStarted)
+                {
+                    respawnCooldown = 35f;
+                    RespawnDeadPlayers();
+                }
+                nextWaveIsCI = (float)Random.Range(0, 100) <= CI_Percent;
+                timeToNextRespawn = (float)Random.Range(minMtfTimeToRespawn, maxMtfTimeToRespawn) * ((!nextWaveIsCI) ? 1f : (1f / CI_Time_Multiplier));
+                chopperStarted = false;
+            }
+            yield return 0f;
+        }
+    }
 
-	private void RespawnDeadPlayers()
-	{
-		int num = 0;
-		List<GameObject> list2;
-		if (ConfigFile.ServerConfig.GetBool("priority_mtf_respawn", true))
-		{
-			List<GameObject> list = (from item in PlayerManager.singleton.players
-				where item.GetComponent<CharacterClassManager>().curClass == 2 && !item.GetComponent<ServerRoles>().OverwatchEnabled
-				orderby item.GetComponent<CharacterClassManager>().DeathTime
-				select item).ToList();
-			while (list.Count > maxRespawnAmount)
-			{
-				list.RemoveAt(list.Count - 1);
-			}
-			if (ConfigFile.ServerConfig.GetBool("use_crypto_rng"))
-			{
-				Misc.ShuffleListSecure(list);
-			}
-			else
-			{
-				Misc.ShuffleList(list);
-			}
-			list2 = list;
-		}
-		else
-		{
-			List<GameObject> list3 = PlayerManager.singleton.players.Where((GameObject item) => item.GetComponent<CharacterClassManager>().curClass == 2 && !item.GetComponent<ServerRoles>().OverwatchEnabled).ToList();
-			if (ConfigFile.ServerConfig.GetBool("use_crypto_rng"))
-			{
-				Misc.ShuffleListSecure(list3);
-			}
-			else
-			{
-				Misc.ShuffleList(list3);
-			}
-			while (list3.Count > maxRespawnAmount)
-			{
-				list3.RemoveAt(list3.Count - 1);
-			}
-			list2 = list3;
-		}
-		playersToNTF.Clear();
-		if (nextWaveIsCI && AlphaWarheadController.host.detonated)
-		{
-			nextWaveIsCI = false;
-		}
-		foreach (GameObject item in list2)
-		{
-			if (!(item == null))
-			{
-				num++;
-				if (nextWaveIsCI)
-				{
-					GetComponent<CharacterClassManager>().SetPlayersClass(8, item);
-					ServerLogs.AddLog(ServerLogs.Modules.ClassChange, item.GetComponent<NicknameSync>().myNick + " (" + item.GetComponent<CharacterClassManager>().SteamId + ") respawned as Chaos Insurgency agent.", ServerLogs.ServerLogType.GameEvent);
-				}
-				else
-				{
-					playersToNTF.Add(item);
-				}
-			}
-		}
-		if (num > 0)
-		{
-			ServerLogs.AddLog(ServerLogs.Modules.ClassChange, ((!nextWaveIsCI) ? "MTF" : "Chaos Insurgency") + " respawned!", ServerLogs.ServerLogType.GameEvent);
-			if (nextWaveIsCI)
-			{
-				Invoke("CmdDelayCIAnnounc", 1f);
-			}
-		}
-		SummonNTF();
-	}
+    private void RespawnDeadPlayers()
+    {
+        int num = 0;
+        List<GameObject> list2;
+        if (ConfigFile.ServerConfig.GetBool("priority_mtf_respawn", true))
+        {
+            List<GameObject> list = (from item in PlayerManager.singleton.players
+                                     where item.GetComponent<CharacterClassManager>().curClass == 2 && !item.GetComponent<ServerRoles>().OverwatchEnabled
+                                     orderby item.GetComponent<CharacterClassManager>().DeathTime
+                                     select item).ToList();
+            while (list.Count > maxRespawnAmount)
+            {
+                list.RemoveAt(list.Count - 1);
+            }
+            if (ConfigFile.ServerConfig.GetBool("use_crypto_rng"))
+            {
+                Misc.ShuffleListSecure(list);
+            }
+            else
+            {
+                Misc.ShuffleList(list);
+            }
+            list2 = list;
+        }
+        else
+        {
+            List<GameObject> list3 = PlayerManager.singleton.players.Where((GameObject item) => item.GetComponent<CharacterClassManager>().curClass == 2 && !item.GetComponent<ServerRoles>().OverwatchEnabled).ToList();
+            if (ConfigFile.ServerConfig.GetBool("use_crypto_rng"))
+            {
+                Misc.ShuffleListSecure(list3);
+            }
+            else
+            {
+                Misc.ShuffleList(list3);
+            }
+            while (list3.Count > maxRespawnAmount)
+            {
+                list3.RemoveAt(list3.Count - 1);
+            }
+            list2 = list3;
+        }
+        playersToNTF.Clear();
+        if (nextWaveIsCI && AlphaWarheadController.host.detonated)
+        {
+            nextWaveIsCI = false;
+        }
+        foreach (GameObject item in list2)
+        {
+            if (!(item == null))
+            {
+                num++;
+                if (nextWaveIsCI)
+                {
+                    GetComponent<CharacterClassManager>().SetPlayersClass(8, item);
+                    ServerLogs.AddLog(ServerLogs.Modules.ClassChange, item.GetComponent<NicknameSync>().myNick + " (" + item.GetComponent<CharacterClassManager>().SteamId + ") respawned as Chaos Insurgency agent.", ServerLogs.ServerLogType.GameEvent);
+                }
+                else
+                {
+                    playersToNTF.Add(item);
+                }
+            }
+        }
+        if (num > 0)
+        {
+            ServerLogs.AddLog(ServerLogs.Modules.ClassChange, ((!nextWaveIsCI) ? "MTF" : "Chaos Insurgency") + " respawned!", ServerLogs.ServerLogType.GameEvent);
+            if (nextWaveIsCI)
+            {
+                Invoke("CmdDelayCIAnnounc", 1f);
+            }
+        }
+        SummonNTF();
+    }
 
-	[ServerCallback]
-	public void SummonNTF()
-	{
-		if (!NetworkServer.active || playersToNTF.Count <= 0)
-		{
-			return;
-		}
-		char letter;
-		int number;
-		SetUnit(playersToNTF.ToArray(), out letter, out number);
-		CallRpcPlayAnnouncement(letter, number, PlayerManager.singleton.players.Where((GameObject item) => item.GetComponent<CharacterClassManager>().IsScpButNotZombie()).ToArray().Length);
-		for (int num = 0; num < playersToNTF.Count; num++)
-		{
-			if (num == 0)
-			{
-				GetComponent<CharacterClassManager>().SetPlayersClass(12, playersToNTF[num]);
-				ServerLogs.AddLog(ServerLogs.Modules.ClassChange, playersToNTF[num].GetComponent<NicknameSync>().myNick + " (" + playersToNTF[num].GetComponent<CharacterClassManager>().SteamId + ") respawned as MTF Commander.", ServerLogs.ServerLogType.GameEvent);
-			}
-			else if (num <= 3)
-			{
-				GetComponent<CharacterClassManager>().SetPlayersClass(11, playersToNTF[num]);
-				ServerLogs.AddLog(ServerLogs.Modules.ClassChange, playersToNTF[num].GetComponent<NicknameSync>().myNick + " (" + playersToNTF[num].GetComponent<CharacterClassManager>().SteamId + ") respawned as MTF Lieutenant.", ServerLogs.ServerLogType.GameEvent);
-			}
-			else
-			{
-				GetComponent<CharacterClassManager>().SetPlayersClass(13, playersToNTF[num]);
-				ServerLogs.AddLog(ServerLogs.Modules.ClassChange, playersToNTF[num].GetComponent<NicknameSync>().myNick + " (" + playersToNTF[num].GetComponent<CharacterClassManager>().SteamId + ") respawned as MTF Guard.", ServerLogs.ServerLogType.GameEvent);
-			}
-		}
-		playersToNTF.Clear();
-	}
+    [ServerCallback]
+    public void SummonNTF()
+    {
+        if (!NetworkServer.active || playersToNTF.Count <= 0)
+        {
+            return;
+        }
+        char letter;
+        int number;
+        SetUnit(playersToNTF.ToArray(), out letter, out number);
+        CallRpcPlayAnnouncement(letter, number, PlayerManager.singleton.players.Where((GameObject item) => item.GetComponent<CharacterClassManager>().IsScpButNotZombie()).ToArray().Length);
+        for (int num = 0; num < playersToNTF.Count; num++)
+        {
+            if (num == 0)
+            {
+                GetComponent<CharacterClassManager>().SetPlayersClass(12, playersToNTF[num]);
+                ServerLogs.AddLog(ServerLogs.Modules.ClassChange, playersToNTF[num].GetComponent<NicknameSync>().myNick + " (" + playersToNTF[num].GetComponent<CharacterClassManager>().SteamId + ") respawned as MTF Commander.", ServerLogs.ServerLogType.GameEvent);
+            }
+            else if (num <= 3)
+            {
+                GetComponent<CharacterClassManager>().SetPlayersClass(11, playersToNTF[num]);
+                ServerLogs.AddLog(ServerLogs.Modules.ClassChange, playersToNTF[num].GetComponent<NicknameSync>().myNick + " (" + playersToNTF[num].GetComponent<CharacterClassManager>().SteamId + ") respawned as MTF Lieutenant.", ServerLogs.ServerLogType.GameEvent);
+            }
+            else
+            {
+                GetComponent<CharacterClassManager>().SetPlayersClass(13, playersToNTF[num]);
+                ServerLogs.AddLog(ServerLogs.Modules.ClassChange, playersToNTF[num].GetComponent<NicknameSync>().myNick + " (" + playersToNTF[num].GetComponent<CharacterClassManager>().SteamId + ") respawned as MTF Guard.", ServerLogs.ServerLogType.GameEvent);
+            }
+        }
+        playersToNTF.Clear();
+    }
 
-	[ClientRpc]
-	private void RpcPlayAnnouncement(char natoLetter, int natoNumber, int scpsLeft)
-	{
-		NineTailedFoxAnnouncer.singleton.AnnounceNtfEntrance(scpsLeft, natoNumber, natoLetter);
-	}
+    [ClientRpc]
+    private void RpcPlayAnnouncement(char natoLetter, int natoNumber, int scpsLeft)
+    {
+        if (SubtitleManager.Instance != null)
+        {
+            string[] natoAlphabet = { "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliett", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "Xray", "Yankee", "Zulu" };
+            string letterName = natoLetter.ToString();
+            int index = char.ToUpper(natoLetter) - 'A';
+            if (index >= 0 && index < natoAlphabet.Length)
+            {
+                letterName = natoAlphabet[index];
+            }
 
-	[ClientRpc]
-	public void RpcPlayCustomAnnouncement(string words, bool makeHold)
-	{
-		NineTailedFoxAnnouncer.singleton.AddPhraseToQueue(words, false, makeHold);
-	}
+            SubtitleManager.Instance.TriggerSubtitleEventFormatted("MtfSpawn", letterName, natoNumber, scpsLeft);
+        }
 
-	[ServerCallback]
-	private void SetUnit(GameObject[] ply, out char letter, out int number)
-	{
-		if (!NetworkServer.active)
-		{
-           letter = '\0';
-			number = 0;
-			return;
-		}
-		int unit = GetComponent<NineTailedFoxUnits>().NewName(out number, out letter);
-		foreach (GameObject gameObject in ply)
-		{
-			gameObject.GetComponent<CharacterClassManager>().SetUnit(unit);
-		}
-	}
+        NineTailedFoxAnnouncer.singleton.AnnounceNtfEntrance(scpsLeft, natoNumber, natoLetter);
+    }
 
-	[ServerCallback]
-	private void SummonChopper(bool state)
-	{
-		if (NetworkServer.active && NonFacilityCompatibility.currentSceneSettings.enableStandardGamplayItems)
-		{
-			mtf_a.SetState(state);
-		}
-	}
+    [ClientRpc]
+    public void RpcPlayCustomAnnouncement(string words, bool makeHold)
+    {
+        NineTailedFoxAnnouncer.singleton.AddPhraseToQueue(words, false, makeHold);
+    }
 
-	[ServerCallback]
-	private void SummonVan()
-	{
-		if (NetworkServer.active && NonFacilityCompatibility.currentSceneSettings.enableStandardGamplayItems)
-		{
-			CallRpcVan();
-		}
-	}
+    [ServerCallback]
+    private void SetUnit(GameObject[] ply, out char letter, out int number)
+    {
+        if (!NetworkServer.active)
+        {
+            letter = '\0';
+            number = 0;
+            return;
+        }
+        int unit = GetComponent<NineTailedFoxUnits>().NewName(out number, out letter);
+        foreach (GameObject gameObject in ply)
+        {
+            gameObject.GetComponent<CharacterClassManager>().SetUnit(unit);
+        }
+    }
 
-	[ClientRpc(channel = 2)]
-	private void RpcVan()
-	{
-		GameObject.Find("CIVanArrive").GetComponent<Animator>().SetTrigger("Arrive");
-	}
+    [ServerCallback]
+    private void SummonChopper(bool state)
+    {
+        if (NetworkServer.active && NonFacilityCompatibility.currentSceneSettings.enableStandardGamplayItems)
+        {
+            mtf_a.SetState(state);
+        }
+    }
 
-	private void CmdDelayCIAnnounc()
-	{
-		PlayAnnoncCI();
-	}
+    [ServerCallback]
+    private void SummonVan()
+    {
+        if (NetworkServer.active && NonFacilityCompatibility.currentSceneSettings.enableStandardGamplayItems)
+        {
+            CallRpcVan();
+        }
+    }
 
-	[ServerCallback]
-	private void PlayAnnoncCI()
-	{
-		if (NetworkServer.active)
-		{
-			CallRpcAnnouncCI();
-		}
-	}
+    [ClientRpc(channel = 2)]
+    private void RpcVan()
+    {
+        GameObject.Find("CIVanArrive").GetComponent<Animator>().SetTrigger("Arrive");
+    }
 
-	[ClientRpc(channel = 2)]
-	private void RpcAnnouncCI()
-	{
-		GameObject[] players = PlayerManager.singleton.players;
-		foreach (GameObject gameObject in players)
-		{
-			CharacterClassManager component = gameObject.GetComponent<CharacterClassManager>();
-			if (component.isLocalPlayer)
-			{
-				Team team = component.klasy[component.curClass].team;
-				if (team == Team.CDP || team == Team.CHI || component.GetComponent<ServerRoles>().OverwatchEnabled)
-				{
-					Object.Instantiate(ciTheme);
-				}
-			}
-		}
-	}
+    private void CmdDelayCIAnnounc()
+    {
+        PlayAnnoncCI();
+    }
 
-	private void UNetVersion()
-	{
-	}
+    [ServerCallback]
+    private void PlayAnnoncCI()
+    {
+        if (NetworkServer.active)
+        {
+            CallRpcAnnouncCI();
+        }
+    }
 
-	protected static void InvokeRpcRpcPlayAnnouncement(NetworkBehaviour obj, NetworkReader reader)
-	{
-		if (!NetworkClient.active)
-		{
-			Debug.LogError("RPC RpcPlayAnnouncement called on server.");
-		}
-		else
-		{
-			((MTFRespawn)obj).RpcPlayAnnouncement((char)reader.ReadPackedUInt32(), (int)reader.ReadPackedUInt32(), (int)reader.ReadPackedUInt32());
-		}
-	}
+    [ClientRpc(channel = 2)]
+    private void RpcAnnouncCI()
+    {
+        GameObject[] players = PlayerManager.singleton.players;
+        foreach (GameObject gameObject in players)
+        {
+            CharacterClassManager component = gameObject.GetComponent<CharacterClassManager>();
+            if (component.isLocalPlayer)
+            {
+                Team team = component.klasy[component.curClass].team;
+                if (team == Team.CDP || team == Team.CHI || component.GetComponent<ServerRoles>().OverwatchEnabled)
+                {
+                    Object.Instantiate(ciTheme);
+                }
+            }
+        }
+    }
 
-	protected static void InvokeRpcRpcPlayCustomAnnouncement(NetworkBehaviour obj, NetworkReader reader)
-	{
-		if (!NetworkClient.active)
-		{
-			Debug.LogError("RPC RpcPlayCustomAnnouncement called on server.");
-		}
-		else
-		{
-			((MTFRespawn)obj).RpcPlayCustomAnnouncement(reader.ReadString(), reader.ReadBoolean());
-		}
-	}
+    private void UNetVersion()
+    {
+    }
 
-	protected static void InvokeRpcRpcVan(NetworkBehaviour obj, NetworkReader reader)
-	{
-		if (!NetworkClient.active)
-		{
-			Debug.LogError("RPC RpcVan called on server.");
-		}
-		else
-		{
-			((MTFRespawn)obj).RpcVan();
-		}
-	}
+    protected static void InvokeRpcRpcPlayAnnouncement(NetworkBehaviour obj, NetworkReader reader)
+    {
+        if (!NetworkClient.active)
+        {
+            Debug.LogError("RPC RpcPlayAnnouncement called on server.");
+        }
+        else
+        {
+            ((MTFRespawn)obj).RpcPlayAnnouncement((char)reader.ReadPackedUInt32(), (int)reader.ReadPackedUInt32(), (int)reader.ReadPackedUInt32());
+        }
+    }
 
-	protected static void InvokeRpcRpcAnnouncCI(NetworkBehaviour obj, NetworkReader reader)
-	{
-		if (!NetworkClient.active)
-		{
-			Debug.LogError("RPC RpcAnnouncCI called on server.");
-		}
-		else
-		{
-			((MTFRespawn)obj).RpcAnnouncCI();
-		}
-	}
+    protected static void InvokeRpcRpcPlayCustomAnnouncement(NetworkBehaviour obj, NetworkReader reader)
+    {
+        if (!NetworkClient.active)
+        {
+            Debug.LogError("RPC RpcPlayCustomAnnouncement called on server.");
+        }
+        else
+        {
+            ((MTFRespawn)obj).RpcPlayCustomAnnouncement(reader.ReadString(), reader.ReadBoolean());
+        }
+    }
 
-	public void CallRpcPlayAnnouncement(char natoLetter, int natoNumber, int scpsLeft)
-	{
-		if (!NetworkServer.active)
-		{
-			Debug.LogError("RPC Function RpcPlayAnnouncement called on client.");
-			return;
-		}
-		NetworkWriter networkWriter = new NetworkWriter();
-		networkWriter.Write((short)0);
-		networkWriter.Write((short)2);
-		networkWriter.WritePackedUInt32((uint)kRpcRpcPlayAnnouncement);
-		networkWriter.Write(GetComponent<NetworkIdentity>().netId);
-		networkWriter.WritePackedUInt32(natoLetter);
-		networkWriter.WritePackedUInt32((uint)natoNumber);
-		networkWriter.WritePackedUInt32((uint)scpsLeft);
-		SendRPCInternal(networkWriter, 0, "RpcPlayAnnouncement");
-	}
+    protected static void InvokeRpcRpcVan(NetworkBehaviour obj, NetworkReader reader)
+    {
+        if (!NetworkClient.active)
+        {
+            Debug.LogError("RPC RpcVan called on server.");
+        }
+        else
+        {
+            ((MTFRespawn)obj).RpcVan();
+        }
+    }
 
-	public void CallRpcPlayCustomAnnouncement(string words, bool makeHold)
-	{
-		if (!NetworkServer.active)
-		{
-			Debug.LogError("RPC Function RpcPlayCustomAnnouncement called on client.");
-			return;
-		}
-		NetworkWriter networkWriter = new NetworkWriter();
-		networkWriter.Write((short)0);
-		networkWriter.Write((short)2);
-		networkWriter.WritePackedUInt32((uint)kRpcRpcPlayCustomAnnouncement);
-		networkWriter.Write(GetComponent<NetworkIdentity>().netId);
-		networkWriter.Write(words);
-		networkWriter.Write(makeHold);
-		SendRPCInternal(networkWriter, 0, "RpcPlayCustomAnnouncement");
-	}
+    protected static void InvokeRpcRpcAnnouncCI(NetworkBehaviour obj, NetworkReader reader)
+    {
+        if (!NetworkClient.active)
+        {
+            Debug.LogError("RPC RpcAnnouncCI called on server.");
+        }
+        else
+        {
+            ((MTFRespawn)obj).RpcAnnouncCI();
+        }
+    }
 
-	public void CallRpcVan()
-	{
-		if (!NetworkServer.active)
-		{
-			Debug.LogError("RPC Function RpcVan called on client.");
-			return;
-		}
-		NetworkWriter networkWriter = new NetworkWriter();
-		networkWriter.Write((short)0);
-		networkWriter.Write((short)2);
-		networkWriter.WritePackedUInt32((uint)kRpcRpcVan);
-		networkWriter.Write(GetComponent<NetworkIdentity>().netId);
-		SendRPCInternal(networkWriter, 2, "RpcVan");
-	}
+    public void CallRpcPlayAnnouncement(char natoLetter, int natoNumber, int scpsLeft)
+    {
+        if (!NetworkServer.active)
+        {
+            Debug.LogError("RPC Function RpcPlayAnnouncement called on client.");
+            return;
+        }
+        NetworkWriter networkWriter = new NetworkWriter();
+        networkWriter.Write((short)0);
+        networkWriter.Write((short)2);
+        networkWriter.WritePackedUInt32((uint)kRpcRpcPlayAnnouncement);
+        networkWriter.Write(base.netId);
+        networkWriter.WritePackedUInt32(natoLetter);
+        networkWriter.WritePackedUInt32((uint)natoNumber);
+        networkWriter.WritePackedUInt32((uint)scpsLeft);
+        SendRPCInternal(networkWriter, 0, "RpcPlayAnnouncement");
+    }
 
-	public void CallRpcAnnouncCI()
-	{
-		if (!NetworkServer.active)
-		{
-			Debug.LogError("RPC Function RpcAnnouncCI called on client.");
-			return;
-		}
-		NetworkWriter networkWriter = new NetworkWriter();
-		networkWriter.Write((short)0);
-		networkWriter.Write((short)2);
-		networkWriter.WritePackedUInt32((uint)kRpcRpcAnnouncCI);
-		networkWriter.Write(GetComponent<NetworkIdentity>().netId);
-		SendRPCInternal(networkWriter, 2, "RpcAnnouncCI");
-	}
+    public void CallRpcPlayCustomAnnouncement(string words, bool makeHold)
+    {
+        if (!NetworkServer.active)
+        {
+            Debug.LogError("RPC Function RpcPlayCustomAnnouncement called on client.");
+            return;
+        }
+        NetworkWriter networkWriter = new NetworkWriter();
+        networkWriter.Write((short)0);
+        networkWriter.Write((short)2);
+        networkWriter.WritePackedUInt32((uint)kRpcRpcPlayCustomAnnouncement);
+        networkWriter.Write(base.netId);
+        networkWriter.Write(words);
+        networkWriter.Write(makeHold);
+        SendRPCInternal(networkWriter, 0, "RpcPlayCustomAnnouncement");
+    }
 
-	static MTFRespawn()
-	{
-		kRpcRpcPlayAnnouncement = 418834810;
-		NetworkBehaviour.RegisterRpcDelegate(typeof(MTFRespawn), kRpcRpcPlayAnnouncement, InvokeRpcRpcPlayAnnouncement);
-		kRpcRpcPlayCustomAnnouncement = -1255213749;
-		NetworkBehaviour.RegisterRpcDelegate(typeof(MTFRespawn), kRpcRpcPlayCustomAnnouncement, InvokeRpcRpcPlayCustomAnnouncement);
-		kRpcRpcVan = -871850524;
-		NetworkBehaviour.RegisterRpcDelegate(typeof(MTFRespawn), kRpcRpcVan, InvokeRpcRpcVan);
-		kRpcRpcAnnouncCI = -699664669;
-		NetworkBehaviour.RegisterRpcDelegate(typeof(MTFRespawn), kRpcRpcAnnouncCI, InvokeRpcRpcAnnouncCI);
-		NetworkCRC.RegisterBehaviour("MTFRespawn", 0);
-	}
+    public void CallRpcVan()
+    {
+        if (!NetworkServer.active)
+        {
+            Debug.LogError("RPC Function RpcVan called on client.");
+            return;
+        }
+        NetworkWriter networkWriter = new NetworkWriter();
+        networkWriter.Write((short)0);
+        networkWriter.Write((short)2);
+        networkWriter.WritePackedUInt32((uint)kRpcRpcVan);
+        networkWriter.Write(base.netId);
+        SendRPCInternal(networkWriter, 2, "RpcVan");
+    }
 
-	public override bool OnSerialize(NetworkWriter writer, bool forceAll)
-	{
-		bool result = default(bool);
-		return result;
-	}
+    public void CallRpcAnnouncCI()
+    {
+        if (!NetworkServer.active)
+        {
+            Debug.LogError("RPC Function RpcAnnouncCI called on client.");
+            return;
+        }
+        NetworkWriter networkWriter = new NetworkWriter();
+        networkWriter.Write((short)0);
+        networkWriter.Write((short)2);
+        networkWriter.WritePackedUInt32((uint)kRpcRpcAnnouncCI);
+        networkWriter.Write(base.netId);
+        SendRPCInternal(networkWriter, 2, "RpcAnnouncCI");
+    }
 
-	public override void OnDeserialize(NetworkReader reader, bool initialState)
-	{
-	}
+    static MTFRespawn()
+    {
+        kRpcRpcPlayAnnouncement = 418834810;
+        NetworkBehaviour.RegisterRpcDelegate(typeof(MTFRespawn), kRpcRpcPlayAnnouncement, InvokeRpcRpcPlayAnnouncement);
+        kRpcRpcPlayCustomAnnouncement = -1255213749;
+        NetworkBehaviour.RegisterRpcDelegate(typeof(MTFRespawn), kRpcRpcPlayCustomAnnouncement, InvokeRpcRpcPlayCustomAnnouncement);
+        kRpcRpcVan = -871850524;
+        NetworkBehaviour.RegisterRpcDelegate(typeof(MTFRespawn), kRpcRpcVan, InvokeRpcRpcVan);
+        kRpcRpcAnnouncCI = -699664669;
+        NetworkBehaviour.RegisterRpcDelegate(typeof(MTFRespawn), kRpcRpcAnnouncCI, InvokeRpcRpcAnnouncCI);
+        NetworkCRC.RegisterBehaviour("MTFRespawn", 0);
+    }
+
+    public override bool OnSerialize(NetworkWriter writer, bool forceAll)
+    {
+        bool result = default(bool);
+        return result;
+    }
+
+    public override void OnDeserialize(NetworkReader reader, bool initialState)
+    {
+    }
 }
