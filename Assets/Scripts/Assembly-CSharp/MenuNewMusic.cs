@@ -16,6 +16,9 @@ public class MenuNewMusic : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float fadeSpeed = 2f;
+    [SerializeField] private float creditsFadeSpeed = 5f; // Faster fade out for credits
+    [SerializeField] private string connectionObjectName = "ConnectionInfo";
+    [SerializeField] private string creditsObjectName = "Credits";
 
     private bool isIntenseActive = false;
     private float targetNormalVolume = 1f;
@@ -25,8 +28,8 @@ public class MenuNewMusic : MonoBehaviour
     private float lastNormalTime = 0f;
     private bool loopsStarted = false;
 
-    private GameObject targetGameObject;
-    private string targetComponentName = "ConnectionInfo";
+    private GameObject connectionGameObject;
+    private GameObject creditsGameObject;
 
     private void Start()
     {
@@ -45,57 +48,75 @@ public class MenuNewMusic : MonoBehaviour
         ConfigureAudioSources();
         PlayIntroAndScheduleLoops();
 
-        StartCoroutine(WaitForConnectionInfo());
+        StartCoroutine(WaitForTargetObjects());
     }
 
     private void Update()
     {
-        bool isObjectActive = false;
+        bool isConnectionActive = (connectionGameObject != null && connectionGameObject.activeInHierarchy);
+        bool isCreditsActive = (creditsGameObject != null && creditsGameObject.activeInHierarchy);
 
-        if (targetGameObject != null)
+        float currentFadeSpeed = fadeSpeed;
+
+        if (isCreditsActive)
         {
-            isObjectActive = targetGameObject.activeInHierarchy;
+            // If credits are open, force mute all background music quickly
+            targetNormalVolume = 0f;
+            targetIntenseVolume = 0f;
+            currentFadeSpeed = creditsFadeSpeed;
         }
-
-        bool shouldBeIntense = (targetGameObject != null && isObjectActive);
-
-        if (shouldBeIntense != isIntenseActive)
+        else
         {
-            if (shouldBeIntense)
-                ActivateIntenseMusic();
+            // Standard dynamic music logic when credits are closed
+            if (isConnectionActive)
+            {
+                targetNormalVolume = 0f;
+                targetIntenseVolume = maxVolume;
+                isIntenseActive = true;
+            }
             else
-                DeactivateIntenseMusic();
+            {
+                targetNormalVolume = maxVolume;
+                targetIntenseVolume = 0f;
+                isIntenseActive = false;
+            }
         }
 
-        FadeVolume(loopNormalSource, targetNormalVolume);
-        FadeVolume(loopIntenseSource, targetIntenseVolume);
+        FadeVolume(loopNormalSource, targetNormalVolume, currentFadeSpeed);
+        FadeVolume(loopIntenseSource, targetIntenseVolume, currentFadeSpeed);
+        FadeVolume(introSource, isCreditsActive ? 0f : maxVolume, currentFadeSpeed);
 
         SynchronizeTracks();
     }
 
-    private IEnumerator WaitForConnectionInfo()
+    private IEnumerator WaitForTargetObjects()
     {
-        while (targetGameObject == null)
+        while (connectionGameObject == null || creditsGameObject == null)
         {
             Transform[] allTransforms = Resources.FindObjectsOfTypeAll<Transform>();
             foreach (Transform t in allTransforms)
             {
-                if (t.gameObject.name == "ConnectionInfo")
+                if (connectionGameObject == null && t.gameObject.name == connectionObjectName)
                 {
-                    targetGameObject = t.gameObject;
-                    Debug.Log("[Music] ConnectionInfo GameObject found via deep scan!");
-                    break;
+                    connectionGameObject = t.gameObject;
+                    Debug.Log("[Music] ConnectionInfo GameObject found!");
+                }
+
+                if (creditsGameObject == null && t.gameObject.name == creditsObjectName)
+                {
+                    creditsGameObject = t.gameObject;
+                    Debug.Log("[Music] Credits GameObject found!");
                 }
             }
             yield return new WaitForSeconds(0.2f);
         }
     }
 
-    private void FadeVolume(AudioSource source, float targetVolume)
+    private void FadeVolume(AudioSource source, float targetVolume, float speed)
     {
         if (source.volume != targetVolume)
         {
-            source.volume = Mathf.MoveTowards(source.volume, targetVolume, fadeSpeed * Time.deltaTime);
+            source.volume = Mathf.MoveTowards(source.volume, targetVolume, speed * Time.deltaTime);
         }
     }
 
@@ -150,21 +171,5 @@ public class MenuNewMusic : MonoBehaviour
         }
 
         lastNormalTime = loopNormalSource.time;
-    }
-
-    public void ActivateIntenseMusic()
-    {
-        Debug.Log("[Music] Switching to Intense version.");
-        isIntenseActive = true;
-        targetNormalVolume = 0f;
-        targetIntenseVolume = maxVolume;
-    }
-
-    public void DeactivateIntenseMusic()
-    {
-        Debug.Log("[Music] Switching back to Normal version.");
-        isIntenseActive = false;
-        targetNormalVolume = maxVolume;
-        targetIntenseVolume = 0f;
     }
 }
