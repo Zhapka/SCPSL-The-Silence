@@ -283,7 +283,7 @@ Material:
     - _Color: {r: 0.6981132, g: 0.6448221, b: 0, a: 1}
     - _Color2: {r: 1, g: 1, b: 1, a: 1}
     - _CurvatureMultOffset: {r: 1, g: 1, b: 0, a: 0}
-    - _CutoffEdgeGlow: {r: 0, g: 0, b: 0, a: 0.02}
+    - _CutoffEdgeGlow: {r: 1, g: 1, b: 1, a: 0.02}
     - _DetailColor: {r: 1, g: 1, b: 1, a: 1}
     - _DetailSpecGloss: {r: 1, g: 1, b: 1, a: 1}
     - _DiffuseScatteringColor: {r: 0, g: 0, b: 0, a: 0}
