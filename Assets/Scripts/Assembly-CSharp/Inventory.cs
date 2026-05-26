@@ -389,26 +389,33 @@ public class Inventory : NetworkBehaviour
 		}
 		RefreshModels();
 		prevIt = curItem;
-		if (base.isLocalPlayer)
-		{
-			WeaponManager.Weapon[] weapons = weaponManager.weapons;
-			foreach (WeaponManager.Weapon weapon in weapons)
-			{
-				if (weapon.inventoryID == curItem)
-				{
-					if (weapon.useProceduralPickupAnimation)
-					{
-						weaponManager.weaponInventoryGroup.localPosition = Vector3.down * 0.4f;
-					}
-					pickupanimation = 4f;
-				}
-			}
-		}
-		if (NetworkServer.active)
-		{
-			RefreshWeapon();
-		}
-	}
+        if (base.isLocalPlayer)
+        {
+            bool isWeapon = false;
+            WeaponManager.Weapon[] weapons = weaponManager.weapons;
+
+            foreach (WeaponManager.Weapon weapon in weapons)
+            {
+                if (weapon.inventoryID == curItem)
+                {
+                    isWeapon = true;
+                    if (weapon.useProceduralPickupAnimation)
+                    {
+                        weaponManager.weaponInventoryGroup.localPosition = Vector3.down * 0.4f;
+                    }
+                    pickupanimation = 4f;
+                }
+            }
+
+            // Если мы достали НЕ оружие (например, ключ-карту с ID от 0 до 11)
+            if (!isWeapon && curItem >= 0)
+            {
+                // Опускаем объект вниз, чтобы скрипт плавного возврата поднял его (эффект доставания)
+                weaponManager.weaponInventoryGroup.localPosition = Vector3.down * 0.4f;
+                pickupanimation = 4f;
+            }
+        }
+    }
 
 	public bool WeaponReadyToInstantPickup()
 	{
