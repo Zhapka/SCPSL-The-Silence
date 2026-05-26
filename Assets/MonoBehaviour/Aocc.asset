@@ -30,11 +30,11 @@ MonoBehaviour:
     m_Settings:
       excludeSkybox: 1
   antialiasing:
-    m_Enabled: 0
+    m_Enabled: 1
     m_Settings:
       method: 0
       fxaaSettings:
-        preset: 2
+        preset: 3
       taaSettings:
         jitterSpread: 0.75
         sharpen: 0.3
@@ -98,12 +98,12 @@ MonoBehaviour:
       logMin: -14
       logMax: 16
   bloom:
-    m_Enabled: 0
+    m_Enabled: 1
     m_Settings:
       bloom:
         intensity: 0
         threshold: 0
-        softKnee: 0
+        softKnee: 0.022
         radius: 1
         antiFlicker: 1
       lensDirt:

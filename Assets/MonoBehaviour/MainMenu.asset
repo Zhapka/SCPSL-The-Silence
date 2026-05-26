@@ -4,13 +4,14 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5d36ee7acb8a07c4830aedf6c8f58322, type: 3}
   m_Name: MainMenu
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   debugViews:
     m_Enabled: 1
     m_Settings:
@@ -33,7 +34,7 @@ MonoBehaviour:
     m_Settings:
       method: 0
       fxaaSettings:
-        preset: 2
+        preset: 3
       taaSettings:
         jitterSpread: 0.75
         sharpen: 0.3
@@ -50,11 +51,11 @@ MonoBehaviour:
       ambientOnly: 0
       highPrecision: 1
   screenSpaceReflection:
-    m_Enabled: 0
+    m_Enabled: 1
     m_Settings:
       reflection:
         blendType: 1
-        reflectionQuality: 0
+        reflectionQuality: 2
         maxDistance: 300
         iterationCount: 1024
         stepSize: 9
@@ -380,12 +381,12 @@ MonoBehaviour:
     m_Enabled: 1
     m_Settings:
       spectralTexture: {fileID: 0}
-      intensity: 0.15
+      intensity: 0.106
   grain:
     m_Enabled: 0
     m_Settings:
       colored: 1
-      intensity: 0.5
+      intensity: 0.48
       size: 1
       luminanceContribution: 0.8
   vignette:
@@ -394,12 +395,11 @@ MonoBehaviour:
       mode: 0
       color: {r: 0, g: 0, b: 0, a: 1}
       center: {x: 0.5, y: 0.5}
-      intensity: 0.15
+      intensity: 0.147
       smoothness: 1
       roundness: 1
       mask: {fileID: 0}
       opacity: 1
       rounded: 0
   dithering:
-    m_Enabled: 0
-    m_Settings: {}
+    m_Enabled: 1
