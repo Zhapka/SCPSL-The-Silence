@@ -83,7 +83,7 @@ TagManager:
   - BreakableGlass
   - Blood&Decals
   - Locker
-  - 
+  - InvinCollider
   m_SortingLayers:
   - name: Sight
     uniqueID: 328081209
