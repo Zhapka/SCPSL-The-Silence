@@ -90,11 +90,18 @@ public class PlayerInteract : NetworkBehaviour
 		{
 			return;
 		}
-		if (hitInfo.transform.GetComponentInParent<Door>() != null)
-		{
-			CallCmdOpenDoor(hitInfo.transform.GetComponentInParent<Door>().gameObject);
-		}
-		else if (hitInfo.transform.CompareTag("AW_Button"))
+        // Проверка для старых гидравлических дверей
+        if (hitInfo.transform.GetComponentInParent<Door>() != null)
+        {
+            CallCmdOpenDoor(hitInfo.transform.GetComponentInParent<Door>().gameObject);
+        }
+        // Проверка для твоей новой пластиковой двери
+        else if (hitInfo.transform.GetComponentInParent<PlasticDoor>() != null)
+        {
+            CallCmdOpenPlasticDoor(hitInfo.transform.GetComponentInParent<PlasticDoor>().gameObject);
+        }
+
+        else if (hitInfo.transform.CompareTag("AW_Button"))
 		{
 			if (_inv.curItem != 0 && _inv.availableItems[Mathf.Clamp(_inv.curItem, 0, _inv.availableItems.Length - 1)].permissions.Any((string item) => item == "CONT_LVL_3"))
 			{
@@ -884,8 +891,41 @@ public class PlayerInteract : NetworkBehaviour
 		networkWriter.Write(executor);
 		SendRPCInternal(networkWriter, 4, "RpcContain106");
 	}
+    [Command(channel = 14)]
+    private void CmdOpenPlasticDoor(GameObject doorId)
+    {
+        if (doorId == null) return;
 
-	static PlayerInteract()
+        PlasticDoor plasticDoor = doorId.GetComponent<PlasticDoor>();
+        if (plasticDoor != null)
+        {
+            // Проверяем дистанцию до двери с помощью встроенного метода SL
+            if (ChckDis(doorId.transform.position))
+            {
+                plasticDoor.ChangeState();
+            }
+        }
+    }
+
+    public void CallCmdOpenPlasticDoor(GameObject doorId)
+    {
+        if (!NetworkClient.active) return;
+        if (base.isServer)
+        {
+            CmdOpenPlasticDoor(doorId);
+            return;
+        }
+        NetworkWriter networkWriter = new NetworkWriter();
+        networkWriter.Write((short)0);
+        networkWriter.Write((short)5);
+        // Регистрируем хэш команды для старого UNet
+        networkWriter.WritePackedUInt32((uint)"CmdOpenPlasticDoor".GetHashCode());
+        networkWriter.Write(GetComponent<NetworkIdentity>().netId);
+        networkWriter.Write(doorId);
+        SendCommandInternal(networkWriter, 14, "CmdOpenPlasticDoor");
+    }
+
+    static PlayerInteract()
 	{
 		kCmdCmdUse914 = -1419322708;
 		NetworkBehaviour.RegisterCommandDelegate(typeof(PlayerInteract), kCmdCmdUse914, InvokeCmdCmdUse914);

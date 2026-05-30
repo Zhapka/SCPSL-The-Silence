@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6841473973800588075}
   - component: {fileID: 523168816630089367}
   - component: {fileID: 2162879211903355306}
+  - component: {fileID: 3890515725893385499}
   m_Layer: 0
   m_Name: Hazmat
   m_TagString: Untagged
@@ -83,3 +84,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3890515725893385499
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6182002504927279334}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.0029101102, y: 0.0032085138, z: 0.0017993896}
+  m_Center: {x: 0.00044110225, y: -0.00048584834, z: 0.0023657263}

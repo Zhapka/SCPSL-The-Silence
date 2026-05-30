@@ -38618,7 +38618,7 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 0
+  m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -38675,6 +38675,9 @@ MonoBehaviour:
   height: 1
   heightDensity: 2
   startDistance: 0
+  altitudeThreshold: 800
+  highAltitudeEndDistance: 5000
+  transitionSpeed: 5
   fogShader: {fileID: 4800000, guid: 81babff7017643a4db17afc93b149895, type: 3}
 --- !u!114 &114689959443641897
 MonoBehaviour:
@@ -102452,47 +102455,6 @@ MonoBehaviour:
     forcedCrosshair: -1
     useHeadBob: 1
     bloodType: 3
-  - fullName: SCP-008
-    classColor: {r: 0.9264706, g: 0.12943341, b: 0.12943341, a: 1}
-    description: 'Kill everyone
-
-      Don''t let anyone to escape
-
-      Cooperate
-      with other <color=#f00>SCPs</color>'
-    team: 0
-    postprocessingProfile: {fileID: 11400000, guid: 6ade03b21dde9a945a8bf9963a75e53a,
-      type: 2}
-    ammoTypes: 000000000000000000000000
-    maxHP: 450
-    walkSpeed: 6
-    runSpeed: 6
-    jumpSpeed: 5
-    model_player: {fileID: 1709254077376921, guid: 43245b3b82542d34d8096e1c594b8b56,
-      type: 3}
-    model_offset:
-      position: {x: 0, y: -1.25, z: 0}
-      rotation: {x: 0, y: 0, z: 0}
-      scale: {x: 1.2, y: 1.2, z: 1.2}
-    model_ragdoll: {fileID: 1709254077376921, guid: d8a37ac1a61e6c44bb0aaad14e9cb5b0,
-      type: 3}
-    ragdoll_offset:
-      position: {x: 0, y: -1.25, z: 0}
-      rotation: {x: 0, y: 0, z: 0}
-      scale: {x: 1.2, y: 1.2, z: 1.2}
-    startItems: 
-    classRecoil: 1
-    stepClips:
-    - {fileID: 8300000, guid: 98ff4e38aca2cf94ea45fa3ad339edc7, type: 3}
-    - {fileID: 8300000, guid: 5a79c3ff0d6d36745bc4cb0f07222924, type: 3}
-    - {fileID: 8300000, guid: fbff58b0fdda3974da590cd62bee2df0, type: 3}
-    - {fileID: 8300000, guid: f369a1024b4efd8428ac8826f79dee55, type: 3}
-    - {fileID: 8300000, guid: bce22c75e7acdf54b96851888c57361d, type: 3}
-    banClass: 1
-    iconHeightOffset: -0.25
-    forcedCrosshair: -1
-    useHeadBob: 1
-    bloodType: 3
   - fullName: Nine-Tailed Fox Lieutenant
     classColor: {r: 0, g: 0.5882354, b: 1, a: 1}
     description: 'Help <color=#FFFF7CFF>scientists</color> to escape
@@ -103344,18 +103306,6 @@ MonoBehaviour:
     durability: 18
     noEquipable: 0
     crosshair: {fileID: 2800000, guid: d0a4a992b9c70244cbc1caf0384e9ebf, type: 3}
-    crosshairColor: {r: 1, g: 1, b: 1, a: 1}
-    id: 0
-  - label: Hazmat
-    icon: {fileID: 2800000, guid: 4a3ecfc31e0b4c94ea44dd8fd47e9df7, type: 3}
-    prefab: {fileID: 6182002504927279334, guid: f8a369eab7426d749bf29db1c03b2071,
-      type: 3}
-    pickingtime: 2
-    permissions: []
-    firstpersonModel: {fileID: 0}
-    durability: 0
-    noEquipable: 1
-    crosshair: {fileID: 0}
     crosshairColor: {r: 1, g: 1, b: 1, a: 1}
     id: 0
   curItem: -1
