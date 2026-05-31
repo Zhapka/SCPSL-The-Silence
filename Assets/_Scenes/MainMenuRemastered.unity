@@ -38012,9 +38012,7 @@ GameObject:
   - component: {fileID: 5871464949627357165}
   - component: {fileID: 5871464949627368400}
   - component: {fileID: 5871464949627367171}
-  - component: {fileID: 5871464949627410449}
   - component: {fileID: 5871464949627406310}
-  - component: {fileID: 5871464949627418184}
   m_Layer: 0
   m_Name: Frame (2)
   m_TagString: Untagged
@@ -38322,27 +38320,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0, y: 0.084}
   m_SizeDelta: {x: 160, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!95 &5871464949627410449
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5871464949627382843}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4e77cacc301e40742bd949777801cca0, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &5871464949627413098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38434,19 +38411,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0, y: 2.89}
   m_SizeDelta: {x: 0, y: 5.77}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5871464949627418184
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5871464949627382843}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e088a056117909ef36624f52d2bfacd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moving: 0
 --- !u!4 &6045966582266899539
 Transform:
   m_ObjectHideFlags: 0
