@@ -121,7 +121,7 @@ public class Scp914 : NetworkBehaviour
 		while (t < 1f)
 		{
 			t += Time.deltaTime * 0.85f;
-			doors.transform.localPosition = Vector3.right * Mathf.Lerp(1.74f, 0f, t);
+			doors.transform.localPosition = Vector3.right * Mathf.Lerp(2.01f, 0f, t);
 			yield return 0f;
 		}
 		yield return Timing.WaitForSeconds(6.28f);

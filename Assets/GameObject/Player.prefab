@@ -38556,6 +38556,7 @@ GameObject:
   - component: {fileID: 114710184242626148}
   - component: {fileID: 114080678717129812}
   - component: {fileID: 114364889774255294}
+  - component: {fileID: 9221120785463463978}
   m_Layer: 2
   m_Name: FirstPersonCharacter
   m_TagString: MainCamera
@@ -38749,6 +38750,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profile: {fileID: 11400000, guid: 645f3f5fd52a9f7428604cf5e1979b58, type: 2}
+--- !u!114 &9221120785463463978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1243736805655561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5a5d003a3c46be8ed41a7aa5ac9c811, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Resolution: 0
+  DefaultSpotCookie: {fileID: 0}
 --- !u!1 &1243806679900083
 GameObject:
   m_ObjectHideFlags: 0
