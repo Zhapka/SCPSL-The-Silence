@@ -109237,22 +109237,22 @@ MonoBehaviour:
   time: 0
   announcements:
   - clip: {fileID: 8300000, guid: fe2e41a3c1edacd429031c92033ca7a9, type: 3}
-    startTime: 0.7
+    startTime: 1.33
     options: 
   - clip: {fileID: 8300000, guid: 4f75ba1155595094bb66775ffdefa877, type: 3}
-    startTime: 4
+    startTime: 2
     options: 
   - clip: {fileID: 8300000, guid: 8a0fec0fa56310d44895cfca369df37d, type: 3}
-    startTime: 7.3
+    startTime: 5.5
     options: 
   - clip: {fileID: 8300000, guid: 2300ea196fb780f4188ad8326cf14507, type: 3}
-    startTime: 10.6
-    options: global
+    startTime: 9
+    options: 
   - clip: {fileID: 8300000, guid: 412e971968bce73409802b264619d423, type: 3}
-    startTime: 11.1
+    startTime: 12
     options: checkpoints
   - clip: {fileID: 8300000, guid: 632064aaa672e3e49a09f745c7a121e6, type: 3}
-    startTime: 11.74
+    startTime: 12.33
     options: decontstart,global
 --- !u!114 &114924406823368305
 MonoBehaviour:
