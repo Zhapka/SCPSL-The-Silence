@@ -38762,8 +38762,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5a5d003a3c46be8ed41a7aa5ac9c811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Resolution: 0
-  DefaultSpotCookie: {fileID: 0}
+  resolution: 1
+  defaultSpotCookie: {fileID: 0}
 --- !u!1 &1243806679900083
 GameObject:
   m_ObjectHideFlags: 0
@@ -102838,6 +102838,47 @@ MonoBehaviour:
     forcedCrosshair: -1
     useHeadBob: 1
     bloodType: 0
+  - fullName: SCP-457
+    classColor: {r: 0.9264706, g: 0.12943341, b: 0.12943341, a: 1}
+    description: 'Kill everyone
+
+      Don''t let anyone to escape
+
+      Cooperate
+      with other <color=#f00>SCPs</color>'
+    team: 0
+    postprocessingProfile: {fileID: 11400000, guid: 3e7296bb1b2638c47b443442c617dd5f,
+      type: 2}
+    ammoTypes: 000000000000000000000000
+    maxHP: 1600
+    walkSpeed: 5
+    runSpeed: 6.5
+    jumpSpeed: 7
+    model_player: {fileID: 1709254077376921, guid: eea669a64fb8a494ea19ad0345e5b3dd,
+      type: 3}
+    model_offset:
+      position: {x: 0, y: -1.289, z: -0.5}
+      rotation: {x: 0, y: 0, z: 0}
+      scale: {x: 0.35, y: 0.35, z: 0.35}
+    model_ragdoll: {fileID: 1709254077376921, guid: 77a1c680adc17474b9c46a1354ecf486,
+      type: 3}
+    ragdoll_offset:
+      position: {x: 0, y: -1.289, z: -0.5}
+      rotation: {x: 0, y: 0, z: 0}
+      scale: {x: 0.35, y: 0.35, z: 0.35}
+    startItems: 
+    classRecoil: 1
+    stepClips:
+    - {fileID: 8300000, guid: fbff58b0fdda3974da590cd62bee2df0, type: 3}
+    - {fileID: 8300000, guid: f369a1024b4efd8428ac8826f79dee55, type: 3}
+    - {fileID: 8300000, guid: 6c54bf73d196bff48872939116d61924, type: 3}
+    - {fileID: 8300000, guid: 1fa63d73446235e4a88b7149890f3d9b, type: 3}
+    - {fileID: 8300000, guid: 6984efd4497abe24d8fd0b82ee3f12f7, type: 3}
+    banClass: 0
+    iconHeightOffset: 0
+    forcedCrosshair: -1
+    useHeadBob: 1
+    bloodType: 0
   classTeamQueue: 040000000000000001000000040000000300000001000000040000000000000003000000010000000400000004000000010000000400000004000000
   unfocusedCamera: {fileID: 1587765826080250}
   ciPercentage: 10
@@ -105569,6 +105610,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97d64f0fac5f940d24589379b934a27a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  plyCam: {fileID: 1243736805655561}
+  iAm457: 0
+  attackDistance: 2
+  attackMask:
+    serializedVersion: 2
+    m_Bits: 24577
+  attackSounds:
+  - {fileID: 8300000, guid: 78d56039b5de9f34dbc35cec481501fd, type: 3}
+  - {fileID: 8300000, guid: d1f053199bc718d44b9bdadba32e8b1d, type: 3}
 --- !u!114 &114720208040278571
 MonoBehaviour:
   m_ObjectHideFlags: 0

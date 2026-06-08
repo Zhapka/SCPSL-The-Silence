@@ -99,6 +99,8 @@ public class CharacterClassManager : NetworkBehaviour
 
 	private Scp939PlayerScript _scp939;
 
+	private Scp457PlayerScript _scp457;
+
 	private LureSubjectContainer _lureSpj;
 
 	[SyncVar(hook = "SetClassID")]
@@ -312,6 +314,7 @@ public class CharacterClassManager : NetworkBehaviour
 		_scp173 = GetComponent<Scp173PlayerScript>();
 		_scp096 = GetComponent<Scp096PlayerScript>();
 		_scp939 = GetComponent<Scp939PlayerScript>();
+		_scp457 = GetComponent<Scp457PlayerScript>();
 		forceClass = ConfigFile.ServerConfig.GetInt("server_forced_class", -1);
 		ciPercentage = ConfigFile.ServerConfig.GetInt("ci_on_start_percent", 10);
 		_enableSyncServerCmdBinding = ConfigFile.ServerConfig.GetBool("enable_sync_command_binding");
@@ -967,6 +970,7 @@ public class CharacterClassManager : NetworkBehaviour
 			_scp173.Init(curClass, c);
 			_scp096.Init(curClass, c);
 			_scp939.Init(curClass, c);
+			_scp457.Init(curClass, c);
 		}
 	}
 
@@ -1168,6 +1172,7 @@ public class CharacterClassManager : NetworkBehaviour
 		_scp096.iAm096 = curClass == 9;
 		_scp106.iAm106 = curClass == 3;
 		_scp173.iAm173 = curClass == 0;
+		_scp457.iAm457 = curClass == 18;
 		_scp939.iAm939 = curClass >= 0 && curClass < klasy.Length && klasy[curClass].fullName.Contains("939");
 		if (base.isLocalPlayer)
 		{

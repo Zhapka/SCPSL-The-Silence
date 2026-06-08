@@ -67,14 +67,16 @@ public class DamageTypes
 
 	public static readonly DamageType Scp939 = new DamageType("SCP-939", false, true);
 
-	private static readonly DamageType[] damageTypes = new DamageType[24]
-	{
-		None, Lure, Nuke, Wall, Decont, Tesla, Falldown, Flying, Contain, Pocket,
-		RagdollLess, Com15, P90, E11StandardRifle, Mp7, Logicer, Usp, Grenade, Scp049, Scp0492,
-		Scp096, Scp106, Scp173, Scp939
-	};
+    public static readonly DamageType Scp457 = new DamageType("SCP-457", false, true);
 
-	public static DamageType FromIndex(int id)
+    private static readonly DamageType[] damageTypes = new DamageType[25]
+    {
+    None, Lure, Nuke, Wall, Decont, Tesla, Falldown, Flying, Contain, Pocket,
+    RagdollLess, Com15, P90, E11StandardRifle, Mp7, Logicer, Usp, Grenade, Scp049, Scp0492,
+    Scp096, Scp106, Scp173, Scp939, Scp457
+    };
+
+    public static DamageType FromIndex(int id)
 	{
 		if (id >= 0 && id < damageTypes.Length)
 		{
